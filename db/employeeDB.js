@@ -52,6 +52,37 @@ const getAllEmployees= ()=>{
     return results;
 }
 
+const getByManager= (manId)=>{
+    connection.connect();
+
+    let results = promiseQuery(`SELECT * FROM employees WHERE managerId = ${manId}`);
+    connection.end();
+    return results;
+}
+
+const getByDepartment = (depId)=>{
+    connection.connect();
+
+    let results = promiseQuery(`SELECT * FROM employees WHERE managerId = ${manId}`);
+    connection.end();
+    return results;
+
+}
+
+let nums = "1,2";
+connection.connect();
+promiseQuery(`SELECT * FROM employees WHERE roleId IN (${nums})`
+    ).then(results=>{
+    console.table(results);
+    connection.end();
+})
+
+// connection.query(`SELECT * FROM employees WHERE roleId IN ?`,(1,2),(err,results)=>{
+//     if(err) throw err;
+//     console.log(results);
+//     connection.end();
+// })
+
 module.exports=
     {
         getAllEmployees: getAllEmployees,
