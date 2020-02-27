@@ -44,3 +44,18 @@ const removeEmployee = empId=>{
     connection.end();
 }
 
+const getAllEmployees= ()=>{
+    connection.connect();
+
+    let results = promiseQuery(`SELECT * FROM employees`);
+    connection.end();
+    return results;
+}
+
+module.exports=
+    {
+        getAllEmployees: getAllEmployees,
+        removeEmployee: removeEmployee,
+        getEmployee: getEmployee,
+        createEmployee:createEmployee
+    }

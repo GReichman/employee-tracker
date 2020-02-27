@@ -14,5 +14,5 @@ CREATE TABLE employees(
 );
 
 INSERT INTO employees (first_name, last_name,roleId) VALUES("garrett","reichman",3);
-INSERT INTO employees (first_name, last_name,roleId) VALUES("tom","hanks",2,1);
-INSERT INTO employees (first_name, last_name,roleId) VALUES("nic","cage",1,2);
+INSERT INTO employees (first_name, last_name,roleId,managerId) VALUES("tom","hanks",2,1);
+INSERT INTO employees (first_name, last_name,roleId, managerId) VALUES("nic","cage",1,2);

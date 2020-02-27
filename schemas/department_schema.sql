@@ -1,3 +1,5 @@
+DROP DATABASE employeeDB;
+CREATE DATABASE employeeDB;
 USE employeeDB;
 
 DROP TABLE IF EXISTS departments;
@@ -5,7 +7,7 @@ DROP TABLE IF EXISTS departments;
 CREATE TABLE departments(
     id integer auto_increment,
     name varchar(30),
-    primary key(depId)
+    primary key(id)
 );
 
 INSERT INTO departments(name) VALUES("sports");

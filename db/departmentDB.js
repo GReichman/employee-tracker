@@ -38,3 +38,19 @@ const removeDepartment = depId=>{
     })
     connection.end();
 }
+
+const getAllDepartments= ()=>{
+    connection.connect();
+
+    let results = promiseQuery(`SELECT * FROM departments`);
+    connection.end();
+    return results;
+}
+
+module.exports=
+    {
+        getAllDepartments: getAllDepartments,
+        removeDepartment: removeDepartment,
+        getDepartment: getDepartment,
+        createDepartment:createDepartment
+    }

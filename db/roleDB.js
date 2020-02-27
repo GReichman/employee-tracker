@@ -24,10 +24,10 @@ connection.connect();
 const getRole = roleId =>{
     connection.connect();
 
-    let results =promiseQuery(`SELECT * FROM roles WHERE id = ${roleId}`);
+    let role=  promiseQuery(`SELECT * FROM roles WHERE id = ${roleId}`);
 
     connection.end();
-    return results;
+    return role;
 }
 
 const removeRole = roleId=>{
@@ -38,3 +38,21 @@ const removeRole = roleId=>{
     })
     connection.end();
 }
+
+const getAllRoles= ()=>{
+    connection.connect();
+
+    let results = promiseQuery(`SELECT * FROM roles`);
+    connection.end();
+    return results;
+}
+
+module.exports=
+    {
+        getAllRoles: getAllRoles,
+        removeRole: removeRole,
+        getRole: getRole,
+        createRole:createRole
+    }
+
+ 
