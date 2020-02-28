@@ -11,40 +11,36 @@ const connection = mysql.createConnection({
 });
 const promiseQuery = util.promisify(connection.query).bind(connection);
 
-
-const createRole = (title,salary,depId)=>{
 connection.connect();
+const createRole = (title,salary,depId)=>{
 
     promiseQuery(`INSERT INTO roles (title,salary,depId) VALUES(${title},${salary},${depId});`).then(results=>{
         console.log("role created");
     })
-    connection.end();
 }//createDepartment
 
 const getRole = roleId =>{
-    connection.connect();
 
     let role=  promiseQuery(`SELECT * FROM roles WHERE id = ${roleId}`);
 
-    connection.end();
     return role;
 }
 
 const removeRole = roleId=>{
-    connection.connect();
 
     promiseQuery(`DELETE FROM roles WHERE id= ${roleId}`).then(results=>{
         console.log("role deleted");
     })
-    connection.end();
 }
 
 const getAllRoles= ()=>{
-    connection.connect();
+    
 
     let results = promiseQuery(`SELECT * FROM roles`);
-    connection.end();
     return results;
+}
+const endConnection=() =>{
+    connection.end();
 }
 
 module.exports=
@@ -52,7 +48,8 @@ module.exports=
         getAllRoles: getAllRoles,
         removeRole: removeRole,
         getRole: getRole,
-        createRole:createRole
+        createRole:createRole,
+        endConnection:endConnection
     }
 
  

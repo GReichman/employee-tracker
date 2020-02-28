@@ -10,41 +10,36 @@ const connection = mysql.createConnection({
     
 });
 const promiseQuery = util.promisify(connection.query).bind(connection);
-
+connection.connect();
 
 const createDepartment = name=>{
-connection.connect();
 
     promiseQuery(`INSERT INTO departments (name) VALUES(${name});`).then(results=>{
         console.log("department created");
     })
-    connection.end();
 }//createDepartment
 
 const getDepartment = depId =>{
-    connection.connect();
 
     let results =promiseQuery(`SELECT * FROM departments WHERE id = ${depId}`);
 
-    connection.end();
     return results;
 }
 
 const removeDepartment = depId=>{
-    connection.connect();
 
     promiseQuery(`DELETE FROM departments WHERE id= ${depId}`).then(results=>{
         console.log("department deleted");
     })
-    connection.end();
 }
 
 const getAllDepartments= ()=>{
-    connection.connect();
 
     let results = promiseQuery(`SELECT * FROM departments`);
-    connection.end();
     return results;
+}
+const endConnection=() =>{
+    connection.end();
 }
 
 module.exports=
@@ -52,5 +47,6 @@ module.exports=
         getAllDepartments: getAllDepartments,
         removeDepartment: removeDepartment,
         getDepartment: getDepartment,
-        createDepartment:createDepartment
+        createDepartment:createDepartment,
+        endConnection:endConnection
     }
