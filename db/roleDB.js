@@ -12,9 +12,9 @@ const connection = mysql.createConnection({
 const promiseQuery = util.promisify(connection.query).bind(connection);
 
 connection.connect();
-const createRole = (title,salary,depId)=>{
 
-    promiseQuery(`INSERT INTO roles (title,salary,depId) VALUES(${title},${salary},${depId});`).then(results=>{
+const createRole = (title,salary,depId)=>{
+    promiseQuery(`INSERT INTO roles (title,salary,depId) VALUES("${title}",${salary},${depId});`).then(results=>{
         console.log("role created");
     })
 }//createDepartment

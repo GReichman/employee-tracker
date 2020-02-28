@@ -14,7 +14,7 @@ connection.connect();
 
 const createDepartment = name=>{
 
-    promiseQuery(`INSERT INTO departments (name) VALUES(${name});`).then(results=>{
+    promiseQuery(`INSERT INTO departments (name) VALUES("${name}");`).then(results=>{
         console.log("department created");
     })
 }//createDepartment
