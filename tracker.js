@@ -94,7 +94,7 @@ function removeEmployee(results) {
         type: "rawlist",
         choices: list
     }).then(response => {
-        emp.removeEmployee(response.employee.charAt(0));
+        emp.removeEmployee(getId(response.employee));
         appManager();
     });
 
@@ -110,7 +110,7 @@ function removeDepartment(results) {
         type: "rawlist",
         choices: list
     }).then(response => {
-        dept.removeDepartment(response.department.charAt(0));
+        dept.removeDepartment(getId(response.department));
         appManager();
     });
 }//remove department
@@ -124,7 +124,7 @@ function removeRole(results) {
         type: "rawlist",
         choices: list
     }).then(response => {
-        rol.removeRole(response.role.charAt(0));
+        rol.removeRole(getId(response.role));
         appManager();
     });
 }//remove department
@@ -172,10 +172,10 @@ function addEmployee(roles, employees) {
         }
     ]).then(choices => {
         if (choices.manager == "none") {
-            emp.createEmployee(choices.first, choices.last, choices.role.charAt(0));
+            emp.createEmployee(choices.first, choices.last,getId(choices.role));
         }
         else {
-            emp.createEmployee(choices.first, choices.last, choices.role.charAt(0), choices.manager.charAt(0));
+            emp.createEmployee(choices.first, choices.last, getId(choices.role), getId(choices.manager));
         }
         appManager();
     })
@@ -211,7 +211,7 @@ function addRole(departments) {
         }
     ]).then(choices => {
 
-        rol.createRole(choices.title, choices.salary, choices.department.charAt(0));
+        rol.createRole(choices.title, choices.salary, getId(choices.department));
         appManager();
     });
 }//addRole
@@ -244,8 +244,7 @@ function changeRole(roles, employees) {
         type: "rawlist",
         choices: roleList
     }]).then(choices => {
-        console.log(`${choices.employee.charAt(0)} ${choices.employee} changes to ${choices.role}`);
-        emp.changeRole(choices.employee.charAt(0), choices.role.charAt(0));
+        emp.changeRole(getId(choices.employee),getId(choices.role));
 
         appManager();
     });
@@ -270,8 +269,8 @@ function changeManager(employees) {
         }
     ]).then(choices=>{
 
-        let empid=choices.employee.charAt(0);
-        let manid=choices.manager.charAt(0);
+        let empid=getId(choices.employee);
+        let manid=getId(choices.manager);
 
         if(choices.manager=="none" || empid==manid){
             emp.changeManager(empid,null);
@@ -288,5 +287,11 @@ function endApp() {
     rol.endConnection();
     dept.endConnection();
 }
+
+
+function getId(str){
+    return str.slice(0,str.indexOf('.'));
+}
+
 
 
