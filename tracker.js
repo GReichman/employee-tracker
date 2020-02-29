@@ -37,6 +37,12 @@ async function appManager() {
         case "Add Department":
             addDepartment();
             break;
+        case "Update Employee Role":
+            changeRole(await rol.getAllRoles(), await emp.getAllEmployees());
+            break;
+        case "Update Employee Manager":
+            changeManager(await emp.getAllEmployees());
+            break;
         case "Quit":
             endApp();
             break;
@@ -137,89 +143,143 @@ function createRoleList(results) {
 
 }
 
-function addEmployee(roles,employees){
+function addEmployee(roles, employees) {
     let roleList = createRoleList(roles);
     let empList = createEmployeeList(employees);
     empList.push("none");
-inquirer.prompt([
-    {
-        message:"Enter First name",
-        type:"input",
-        name:"first"
-    },
-    {
-        message:"Enter Last Name",
-        type:"input",
-        name:"last"
-    },
-    {
-        message:"Select Role",
-        type:"rawlist",
-        choices:roleList,
-        name:"role"
-    },
-    {
-        message: "Select Manager",
-        type:"rawlist",
-        choices:empList,
-        name:"manager"
-    }
-]).then(choices=>{
-   if(choices.manager=="none"){
-    emp.createEmployee(choices.first,choices.last,choices.role.charAt(0));
-   }
-   else{
-    emp.createEmployee(choices.first,choices.last,choices.role.charAt(0),choices.manager.charAt(0));
-   }
-    appManager();
-})
+    inquirer.prompt([
+        {
+            message: "Enter First name",
+            type: "input",
+            name: "first"
+        },
+        {
+            message: "Enter Last Name",
+            type: "input",
+            name: "last"
+        },
+        {
+            message: "Select Role",
+            type: "rawlist",
+            choices: roleList,
+            name: "role"
+        },
+        {
+            message: "Select Manager",
+            type: "rawlist",
+            choices: empList,
+            name: "manager"
+        }
+    ]).then(choices => {
+        if (choices.manager == "none") {
+            emp.createEmployee(choices.first, choices.last, choices.role.charAt(0));
+        }
+        else {
+            emp.createEmployee(choices.first, choices.last, choices.role.charAt(0), choices.manager.charAt(0));
+        }
+        appManager();
+    })
 }//addEmployee
 
-function addRole(departments){
-let departmentList = createDepartmentList(departments);
+function addRole(departments) {
+    let departmentList = createDepartmentList(departments);
 
-inquirer.prompt([
-    {
-        message:"Enter Role Title",
-        type:"input",
-        name:"title"
-    },
-    {
-        message:"Enter Salary",
-        type:"input",
-        name:"salary",
-        validate:function(input){
-            if(isNaN(input)){
-                
-                return "must be a number";
+    inquirer.prompt([
+        {
+            message: "Enter Role Title",
+            type: "input",
+            name: "title"
+        },
+        {
+            message: "Enter Salary",
+            type: "input",
+            name: "salary",
+            validate: function (input) {
+                if (isNaN(input)) {
+
+                    return "must be a number";
+                }
+                else {
+                    return true;
+                }
             }
-            else{
-                return true;
-            }
+        }, {
+            message: "Select Department",
+            type: "rawlist",
+            name: "department",
+            choices: departmentList
         }
-    },{
-        message:"Select Department",
-        type:"rawlist",
-        name:"department",
-        choices:departmentList
-    }
-]).then(choices=>{
-    
-    rol.createRole(choices.title,choices.salary,choices.department.charAt(0));
-    appManager();
-});
+    ]).then(choices => {
+
+        rol.createRole(choices.title, choices.salary, choices.department.charAt(0));
+        appManager();
+    });
 }//addRole
 
-function addDepartment(){
+function addDepartment() {
     inquirer.prompt({
-        message:"Enter Department Name",
-        type:"input",
-        name:"department"
-    }).then(choice=>{
+        message: "Enter Department Name",
+        type: "input",
+        name: "department"
+    }).then(choice => {
         dept.createDepartment(choice.department);
         appManager();
     })
 
+}
+
+function changeRole(roles, employees) {
+    let empList = createEmployeeList(employees);
+    let roleList = createRoleList(roles);
+
+    inquirer.prompt([{
+        message: "Select which employee you would like to change",
+        name: "employee",
+        type: "rawlist",
+        choices: empList
+    },
+    {
+        message: "Select their new role",
+        name: "role",
+        type: "rawlist",
+        choices: roleList
+    }]).then(choices => {
+        console.log(`${choices.employee.charAt(0)} ${choices.employee} changes to ${choices.role}`);
+        emp.changeRole(choices.employee.charAt(0), choices.role.charAt(0));
+
+        appManager();
+    });
+}
+
+function changeManager(employees) {
+    let empList = createEmployeeList(employees);
+    let manList = empList.slice();
+    manList.push("none");
+    inquirer.prompt([
+        {
+            message:"Select which employee's manager has changed",
+            name:"employee",
+            type:"rawlist",
+            choices:empList
+        },
+        {
+            message:"Select their new manager",
+            name:"manager",
+            type:"rawlist",
+            choices:manList
+        }
+    ]).then(choices=>{
+
+        let empid=choices.employee.charAt(0);
+        let manid=choices.manager.charAt(0);
+
+        if(choices.manager=="none" || empid==manid){
+            emp.changeManager(empid,null);
+        }else{
+            emp.changeManager(empid,manid);
+        }
+        appManager();
+    })
 }
 
 function endApp() {

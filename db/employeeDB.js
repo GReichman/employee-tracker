@@ -50,6 +50,16 @@ const getAllEmployees= ()=>{
     return results;
 }
 
+const changeRole=(id,roleId)=>{
+
+    promiseQuery("UPDATE employees SET roleId=? WHERE id=?",[roleId,id]);
+
+}
+
+const changeManager= (id,manId)=>{
+    promiseQuery("UPDATE employees SET managerId=? WHERE id=?",[manId,id]);
+}
+
 
 const getByManager= (manId)=>{
   
@@ -90,5 +100,7 @@ module.exports=
         removeEmployee: removeEmployee,
         getEmployee: getEmployee,
         createEmployee:createEmployee,
-        endConnection:endConnection
+        endConnection:endConnection,
+        changeRole:changeRole,
+        changeManager:changeManager
     }
