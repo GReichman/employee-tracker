@@ -60,39 +60,14 @@ const changeManager= (id,manId)=>{
     promiseQuery("UPDATE employees SET managerId=? WHERE id=?",[manId,id]);
 }
 
-
-const getByManager= (manId)=>{
-  
-
-    let results = promiseQuery(`SELECT * FROM employees WHERE managerId = ${manId}`);
-    return results;
-}
-
-const getByDepartment = (depId)=>{
- 
-
-    let results = promiseQuery(`SELECT * FROM employees WHERE managerId = ${manId}`);
-    return results;
-
+const employeesByRole = ()=>{
+    return promiseQuery(`SELECT employees.first_name, employees.last_name, roles.title FROM employees, roles WHERE employees.roleId = roles.id`);
 }
 
 const endConnection=() =>{
     connection.end();
 }
 
-// let nums = "1,2";
-// connection.connect();
-// promiseQuery(`SELECT * FROM employees WHERE roleId IN (${nums})`
-//     ).then(results=>{
-//     console.table(results);
-//     connection.end();
-// })
-
-// connection.query(`SELECT * FROM employees WHERE roleId IN ?`,(1,2),(err,results)=>{
-//     if(err) throw err;
-//     console.log(results);
-//     connection.end();
-// })
 
 module.exports=
     {
@@ -102,5 +77,6 @@ module.exports=
         createEmployee:createEmployee,
         endConnection:endConnection,
         changeRole:changeRole,
-        changeManager:changeManager
+        changeManager:changeManager,
+        employeesByRole:employeesByRole
     }

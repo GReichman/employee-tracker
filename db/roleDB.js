@@ -39,6 +39,19 @@ const getAllRoles= ()=>{
     let results = promiseQuery(`SELECT * FROM roles`);
     return results;
 }
+
+const changeTitle = (id,newTitle)=>{
+    promiseQuery(`UPDATE roles SET title=? WHERE id=?`,[newTitle,id]);
+}
+
+const changeSalary = (id,newSalary)=>{
+    promiseQuery(`UPDATE roles SET salary=? WHERE id=?`,[newSalary,id]);
+}
+
+const rolesByDepartment = () =>{
+    return promiseQuery(`SELECT roles.title, departments.name FROM roles, departments WHERE roles.depId = departments.id`);
+}
+
 const endConnection=() =>{
     connection.end();
 }
@@ -49,7 +62,10 @@ module.exports=
         removeRole: removeRole,
         getRole: getRole,
         createRole:createRole,
-        endConnection:endConnection
+        endConnection:endConnection,
+        changeTitle:changeTitle,
+        changeSalary:changeSalary,
+        rolesByDepartment:rolesByDepartment
     }
 
  

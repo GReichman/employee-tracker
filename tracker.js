@@ -43,6 +43,21 @@ async function appManager() {
         case "Update Employee Manager":
             changeManager(await emp.getAllEmployees());
             break;
+        case "Update Role Title":
+            changeTitle(await rol.getAllRoles());
+            break;
+        case "Update Role Salary":
+            changeSalary(await rol.getAllRoles());
+            break;
+        case "Update Department Name":
+            changeDepartment(await dept.getAllDepartments());
+            break;
+        case "View Roles By Department":
+            viewAll(await rol.rolesByDepartment());
+            break;
+        case "View All Employees By Role":
+            viewAll(await emp.employeesByRole());    
+        break;
         case "Quit":
             endApp();
             break;
@@ -59,8 +74,7 @@ function displayOptions() {
         message: "What would you like to do?",
         choices: [
             "View All Employees",
-            "View All Employees By Department",
-            "View All Employees By Manager",
+            "View All Employees By Role",
             "Add Employee",
             "Remove Employee",
             "Update Employee Role",
@@ -172,7 +186,7 @@ function addEmployee(roles, employees) {
         }
     ]).then(choices => {
         if (choices.manager == "none") {
-            emp.createEmployee(choices.first, choices.last,getId(choices.role));
+            emp.createEmployee(choices.first, choices.last, getId(choices.role));
         }
         else {
             emp.createEmployee(choices.first, choices.last, getId(choices.role), getId(choices.manager));
@@ -244,7 +258,7 @@ function changeRole(roles, employees) {
         type: "rawlist",
         choices: roleList
     }]).then(choices => {
-        emp.changeRole(getId(choices.employee),getId(choices.role));
+        emp.changeRole(getId(choices.employee), getId(choices.role));
 
         appManager();
     });
@@ -256,27 +270,98 @@ function changeManager(employees) {
     manList.push("none");
     inquirer.prompt([
         {
-            message:"Select which employee's manager has changed",
-            name:"employee",
-            type:"rawlist",
-            choices:empList
+            message: "Select which employee's manager has changed",
+            name: "employee",
+            type: "rawlist",
+            choices: empList
         },
         {
-            message:"Select their new manager",
-            name:"manager",
+            message: "Select their new manager",
+            name: "manager",
+            type: "rawlist",
+            choices: manList
+        }
+    ]).then(choices => {
+
+        let empid = getId(choices.employee);
+        let manid = getId(choices.manager);
+
+        if (choices.manager == "none" || empid == manid) {
+            emp.changeManager(empid, null);
+        } else {
+            emp.changeManager(empid, manid);
+        }
+        appManager();
+    })
+}
+
+function changeTitle(roles) {
+    let roleList = createRoleList(roles);
+
+    inquirer.prompt([
+        {
+            message: "Select the title to change",
+            name: "oldTitle",
+            type: "rawlist",
+            choices: roleList
+        },
+        {
+            message: "Enter the new title",
+            name: "newTitle",
+            type: "input",
+        }
+    ]).then(choices => {
+        rol.changeTitle(getId(choices.oldTitle), choices.newTitle);
+        appManager();
+    })
+}
+
+function changeSalary(roles) {
+    let roleList = createRoleList(roles);
+
+    inquirer.prompt([
+        {
+            message: "Select the role whose salary youd like to change",
+            name: "oldSalary",
+            type: "rawlist",
+            choices: roleList
+        },
+        {
+            message: "Enter the new salary",
+            name: "newSalary",
+            type: "input",
+            validate: function (input) {
+                if (isNaN(input)) {
+                    return "must be a number";
+                }
+                else {
+                    return true;
+                }
+            }
+        }
+    ]).then(choices => {
+        rol.changeSalary(getId(choices.oldSalary), choices.newSalary);
+        appManager();
+    })
+}
+
+function changeDepartment(departments){
+    let deptList = createDepartmentList(departments);
+
+    inquirer.prompt([
+        {
+            message:"Select which department you wish to change",
             type:"rawlist",
-            choices:manList
+            choices:deptList,
+            name:"department"
+        },
+        {
+            message:"Enter new department name",
+            type:"input",
+            name:"newName"
         }
     ]).then(choices=>{
-
-        let empid=getId(choices.employee);
-        let manid=getId(choices.manager);
-
-        if(choices.manager=="none" || empid==manid){
-            emp.changeManager(empid,null);
-        }else{
-            emp.changeManager(empid,manid);
-        }
+        dept.changeName(getId(choices.department),choices.newName);
         appManager();
     })
 }
@@ -289,8 +374,8 @@ function endApp() {
 }
 
 
-function getId(str){
-    return str.slice(0,str.indexOf('.'));
+function getId(str) {
+    return str.slice(0, str.indexOf('.'));
 }
 
 

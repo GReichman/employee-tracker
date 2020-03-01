@@ -38,6 +38,10 @@ const getAllDepartments= ()=>{
     let results = promiseQuery(`SELECT * FROM departments`);
     return results;
 }
+
+const changeName = (id,name)=>{
+    promiseQuery(`UPDATE departments SET name=? WHERE id=?`,[name,id]);
+}
 const endConnection=() =>{
     connection.end();
 }
@@ -48,5 +52,6 @@ module.exports=
         removeDepartment: removeDepartment,
         getDepartment: getDepartment,
         createDepartment:createDepartment,
-        endConnection:endConnection
+        endConnection:endConnection,
+        changeName:changeName
     }
